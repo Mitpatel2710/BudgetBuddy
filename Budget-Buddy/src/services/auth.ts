@@ -33,8 +33,8 @@ export class AuthService {
         throw new Error('An account with this email already exists.');
       }
 
-      const authResponse = await supabase.auth.signUp({ 
-        email, 
+      const authResponse = await supabase.auth.signUp({
+        email,
         password,
         options: {
           data: {
@@ -78,6 +78,85 @@ export class AuthService {
     }
   }
 
+  static async resetPassword(email: string) {
+    if (!supabase) {
+      throw new Error('Database connection not initialized. Please connect to Supabase first.');
+    }
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/#/reset-password'
+      });
+
+      if (error) throw this.formatAuthError(error);
+    } catch (error) {
+      console.error('Reset password error:', error);
+      throw error instanceof Error ? error : new Error('Failed to send reset password email.');
+    }
+  }
+
+  static async updatePassword(token: string, newPassword: string) {
+    if (!supabase) {
+      throw new Error('Database connection not initialized. Please connect to Supabase first.');
+    }
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) throw this.formatAuthError(error);
+    } catch (error) {
+      console.error('Update password error:', error);
+      throw error instanceof Error ? error : new Error('Failed to update password.');
+    }
+  }
+
+  static async deleteAccount() {
+    if (!supabase) {
+      throw new Error('Database connection not initialized');
+    }
+
+    try {
+      const user = (await supabase.auth.getUser()).data.user;
+      if (!user) throw new Error('No authenticated user found');
+
+      // Delete all user data in order
+      const { error: transactionsError } = await supabase
+        .from('transactions')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (transactionsError) throw transactionsError;
+
+      const { error: categoriesError } = await supabase
+        .from('custom_categories')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (categoriesError) throw categoriesError;
+
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', user.id);
+
+      if (profileError) throw profileError;
+
+      // Finally, delete the user's auth account
+      const { error: deleteError } = await supabase.rpc('delete_user');
+      if (deleteError) throw deleteError;
+
+      // Sign out after successful deletion
+      await supabase.auth.signOut();
+
+      return true;
+    } catch (error) {
+      console.error('Delete account error:', error);
+      throw new Error('Failed to delete account. Please try again.');
+    }
+  }
+
   private static handleAuthResponse(response: AuthResponse) {
     if (response.error) {
       throw this.formatAuthError(response.error);
@@ -87,7 +166,7 @@ export class AuthService {
 
   private static formatAuthError(error: AuthError): Error {
     console.error('Auth error details:', error);
-    
+
     switch (error.message) {
       case 'Invalid login credentials':
         return new Error('Invalid email or password. Please check your credentials and try again.');

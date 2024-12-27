@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Mail, Lock, AlertCircle } from 'lucide-react';
+import { Mail, AlertCircle } from 'lucide-react';
 import { AuthService } from '../../services/auth';
 import { ForgotPasswordForm } from './ForgotPasswordForm';
 import { SignUpForm } from './SignUpForm';
 import { Logo } from '../Logo';
 import { ThemeToggle } from '../ThemeToggle';
+import { PasswordInput } from '../form/PasswordInput';
 import toast from 'react-hot-toast';
 
 interface LoginFormProps {
@@ -49,7 +50,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-100 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
         <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
-          <SignUpForm 
+          <SignUpForm
             onSuccess={onSuccess}
             onBack={() => setIsSignUp(false)}
           />
@@ -64,7 +65,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         <div className="flex justify-end">
           <ThemeToggle />
         </div>
-        
+
         <div className="text-center">
           <div className="flex justify-center">
             <Logo />
@@ -111,22 +112,15 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
               <label htmlFor="password" className="sr-only">
                 Password
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none relative block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-gray-100 rounded-md bg-white dark:bg-gray-700 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
-                  placeholder="Password"
-                />
-              </div>
+              <PasswordInput
+                id="password"
+                name="password"
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+              />
             </div>
           </div>
 

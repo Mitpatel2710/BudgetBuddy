@@ -8,6 +8,7 @@ import {
   CategoryScale,
   LinearScale
 } from 'chart.js';
+
 import type { Transaction } from '../../types/finance';
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '../../constants/categories';
 

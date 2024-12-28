@@ -1,50 +1,59 @@
 import { supabase } from '../lib/supabase';
 
 export class AccountService {
-  static async deleteAccount() {
+  /**
+   * Validates database connection and user session
+   * @throws Error if no connection or active session
+   */
+  private static async validateConnection(): Promise<void> {
     if (!supabase) {
       throw new Error('Database connection not initialized');
     }
 
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (error || !session) {
+      throw new Error('No active session found. Please sign in again.');
+    }
+  }
+
+  /**
+   * Deletes all user data using the RPC function
+   * @throws Error if deletion fails
+   */
+  private static async deleteUserData(): Promise<void> {
+    const { error } = await supabase.rpc('delete_user_data');
+    if (error) {
+      console.error('RPC error:', error);
+      throw new Error('Failed to delete user data');
+    }
+  }
+
+  /**
+   * Signs out the user and cleans up the session
+   */
+  private static async cleanupSession(): Promise<void> {
     try {
-      // Get current session to verify authentication
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        throw new Error('No active session found. Please sign in again.');
-      }
-
-      // First delete all user data using our custom function
-      const { error: deleteDataError } = await supabase.rpc('delete_user_data');
-
-      if (deleteDataError) {
-        console.error('Error deleting user data:', deleteDataError);
-        throw new Error('Failed to delete account data');
-      }
-
-      // Delete the user's auth account
-      const { error: deleteUserError } = await supabase.auth.admin.deleteUser(
-        session.user.id
-      );
-
-      if (deleteUserError) {
-        throw deleteUserError;
-      }
-
-      // Finally sign out
       await supabase.auth.signOut();
+    } catch (error) {
+      console.error('Signout error:', error);
+      // Continue with deletion even if signout fails
+    }
+  }
 
+  /**
+   * Deletes the user account and all associated data
+   * @throws Error if deletion process fails
+   */
+  static async deleteAccount(): Promise<void> {
+    try {
+      await this.validateConnection();
+      await this.deleteUserData();
+      await this.cleanupSession();
     } catch (error) {
       console.error('Account deletion error:', error);
-
-      // Provide more specific error messages
-      if (error instanceof Error) {
-        if (error.message.includes('not_admin')) {
-          throw new Error('Unable to delete account due to permissions. Please contact support.');
-        }
-        throw error;
-      }
-
-      throw new Error('Failed to delete account. Please try again later.');
+      throw error instanceof Error 
+        ? error 
+        : new Error('Failed to delete account');
     }
   }
 }

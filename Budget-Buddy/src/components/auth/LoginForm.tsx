@@ -50,7 +50,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-100 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
         <div className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
-          <SignUpForm
+          <SignUpForm 
             onSuccess={onSuccess}
             onBack={() => setIsSignUp(false)}
           />
@@ -65,7 +65,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
         <div className="flex justify-end">
           <ThemeToggle />
         </div>
-
+        
         <div className="text-center">
           <div className="flex justify-center">
             <Logo />

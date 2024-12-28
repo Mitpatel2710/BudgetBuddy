@@ -18,7 +18,7 @@ export function Dashboard({ summary, transactions, onClearTransactions }: Dashbo
 
   const handleClear = async () => {
     if (!onClearTransactions) return;
-
+    
     if (window.confirm('Are you sure you want to clear all transactions? This action cannot be undone.')) {
       setIsClearing(true);
       try {
@@ -68,7 +68,7 @@ export function Dashboard({ summary, transactions, onClearTransactions }: Dashbo
                 ${summary.totalIncome.toFixed(2)}
               </p>
             </div>
-            <motion.div
+            <motion.div 
               className="p-3 bg-green-100 dark:bg-green-900/30 rounded-full"
               animate={{ rotate: [0, 10, -10, 0] }}
               transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
@@ -91,7 +91,7 @@ export function Dashboard({ summary, transactions, onClearTransactions }: Dashbo
                 ${summary.totalExpenses.toFixed(2)}
               </p>
             </div>
-            <motion.div
+            <motion.div 
               className="p-3 bg-red-100 dark:bg-red-900/30 rounded-full"
               animate={{ rotate: [0, -10, 10, 0] }}
               transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
@@ -114,7 +114,7 @@ export function Dashboard({ summary, transactions, onClearTransactions }: Dashbo
                 ${summary.savings.toFixed(2)}
               </p>
             </div>
-            <motion.div
+            <motion.div 
               className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full"
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}

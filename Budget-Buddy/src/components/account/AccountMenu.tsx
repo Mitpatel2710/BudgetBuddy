@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { X, Settings, Trash2 } from 'lucide-react';
-import { AuthService } from '../../services/auth';
+import { X, Settings, Trash2, Loader } from 'lucide-react';
+import { AccountService } from '../../services/account';
 import toast from 'react-hot-toast';
 
 interface AccountMenuProps {
@@ -15,11 +15,11 @@ export function AccountMenu({ email, onClose }: AccountMenuProps) {
     const confirmed = window.confirm(
       'Are you sure you want to delete your account? This action cannot be undone and will permanently delete all your data.'
     );
-
+    
     if (confirmed) {
       setIsDeleting(true);
       try {
-        await AuthService.deleteAccount();
+        await AccountService.deleteAccount();
         toast.success('Account deleted successfully');
         onClose();
       } catch (error) {
@@ -70,7 +70,11 @@ export function AccountMenu({ email, onClose }: AccountMenuProps) {
           className="w-full flex items-center justify-between p-3 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors disabled:opacity-50"
         >
           <div className="flex items-center gap-3">
-            <Trash2 className="h-5 w-5" />
+            {isDeleting ? (
+              <Loader className="h-5 w-5 animate-spin" />
+            ) : (
+              <Trash2 className="h-5 w-5" />
+            )}
             <span>{isDeleting ? 'Deleting Account...' : 'Delete Account'}</span>
           </div>
         </button>

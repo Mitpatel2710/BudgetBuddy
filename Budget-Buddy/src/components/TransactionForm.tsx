@@ -7,6 +7,8 @@ import { StyledInput } from './form/StyledInput';
 import { StyledSelect } from './form/StyledSelect';
 import { DatePicker } from './form/DatePicker';
 import { validateAmount, validateDescription, validateDate } from '../utils/validation';
+import { useFormatMoney } from '../utils/format';
+import { useCurrency } from '../contexts/CurrencyContext';
 import toast from 'react-hot-toast';
 
 interface TransactionFormProps {
@@ -15,6 +17,9 @@ interface TransactionFormProps {
 
 export function TransactionForm({ onAddTransaction }: TransactionFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { currency } = useCurrency();
+  const formatMoney = useFormatMoney();
+
   const [formData, setFormData] = useState({
     amount: '',
     description: '',
@@ -22,18 +27,20 @@ export function TransactionForm({ onAddTransaction }: TransactionFormProps) {
     type: 'expense' as 'income' | 'expense' | 'refund',
     date: new Date().toISOString().split('T')[0]
   });
+
   const [errors, setErrors] = useState({
     amount: '',
     description: '',
     date: ''
   });
 
+  // Helper functions for form handling
   const handleTypeChange = (type: 'income' | 'expense' | 'refund') => {
     setFormData(prev => ({
       ...prev,
       type,
-      category: type === 'income' 
-        ? INCOME_CATEGORIES[0] 
+      category: type === 'income'
+        ? INCOME_CATEGORIES[0]
         : type === 'refund'
           ? REFUND_CATEGORIES[0]
           : EXPENSE_CATEGORIES[0]
@@ -42,18 +49,16 @@ export function TransactionForm({ onAddTransaction }: TransactionFormProps) {
 
   const getCategoryOptions = () => {
     switch (formData.type) {
-      case 'income':
-        return INCOME_CATEGORIES;
-      case 'refund':
-        return REFUND_CATEGORIES;
-      default:
-        return EXPENSE_CATEGORIES;
+      case 'income': return INCOME_CATEGORIES;
+      case 'refund': return REFUND_CATEGORIES;
+      default: return EXPENSE_CATEGORIES;
     }
   };
 
+  // Form submission handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate form
     const amountError = validateAmount(formData.amount);
     const descriptionError = validateDescription(formData.description);
@@ -87,7 +92,7 @@ export function TransactionForm({ onAddTransaction }: TransactionFormProps) {
         type: 'expense',
         date: new Date().toISOString().split('T')[0]
       });
-      
+
       toast.success('Transaction added successfully');
     } catch (error) {
       toast.error('Failed to add transaction');
@@ -96,6 +101,7 @@ export function TransactionForm({ onAddTransaction }: TransactionFormProps) {
     }
   };
 
+  // JSX for the form
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -126,7 +132,7 @@ export function TransactionForm({ onAddTransaction }: TransactionFormProps) {
           value={formData.amount}
           onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
           error={errors.amount}
-          icon={<DollarSign className="h-5 w-5 text-gray-400" />}
+          icon={<span className="text-gray-400">{currency.symbol}</span>}
           placeholder="Enter amount"
           step="0.01"
           min="0"

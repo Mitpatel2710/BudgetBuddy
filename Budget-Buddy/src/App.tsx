@@ -16,7 +16,7 @@ export function App() {
   const { user, loading: authLoading, signOut, isSupabaseConnected } = useAuth();
   const { profile, loading: profileLoading } = useProfile();
   const { transactions, addTransaction, clearTransactions, summary, loading: transactionsLoading } = useTransactions();
-
+  
   if (!isSupabaseConnected) {
     return <ConnectSupabase />;
   }
@@ -57,12 +57,12 @@ export function App() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <Dashboard
-          summary={summary}
-          transactions={transactions}
+        <Dashboard 
+          summary={summary} 
+          transactions={transactions} 
           onClearTransactions={clearTransactions}
         />
-
+        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <TransactionForm onAddTransaction={addTransaction} />
           <TransactionList transactions={transactions} loading={transactionsLoading} />

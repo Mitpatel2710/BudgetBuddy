@@ -17,12 +17,12 @@ export function PasswordInput({ error, className = '', ...props }: PasswordInput
         {...props}
         type={showPassword ? 'text' : 'password'}
         className={`
-          appearance-none relative block w-full pl-10 pr-10 py-2
-          border border-gray-300 dark:border-gray-600
-          placeholder-gray-500 dark:placeholder-gray-400
-          text-gray-900 dark:text-gray-100
+          appearance-none relative block w-full pl-10 pr-10 py-2 
+          border border-gray-300 dark:border-gray-600 
+          placeholder-gray-500 dark:placeholder-gray-400 
+          text-gray-900 dark:text-gray-100 
           rounded-md bg-white dark:bg-gray-700
-          focus:outline-none focus:ring-purple-500 focus:border-purple-500
+          focus:outline-none focus:ring-purple-500 focus:border-purple-500 
           focus:z-10 sm:text-sm
           ${error ? 'border-red-300 dark:border-red-600' : ''}
           ${className}

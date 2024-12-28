@@ -80,7 +80,7 @@ export function HamburgerMenu({ onSignOut, transactions }: HamburgerMenuProps) {
       {showStatements && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <MonthlyStatements
+            <MonthlyStatements 
               transactions={transactions}
               onClose={closeAll}
             />
@@ -91,7 +91,7 @@ export function HamburgerMenu({ onSignOut, transactions }: HamburgerMenuProps) {
       {showAccount && user && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
-            <AccountMenu
+            <AccountMenu 
               email={user.email || ''}
               onClose={closeAll}
             />

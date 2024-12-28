@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Settings, Trash2, Loader } from 'lucide-react';
 import { AccountService } from '../../services/account';
+import { ManageAccount } from './ManageAccount';
 import toast from 'react-hot-toast';
 
 interface AccountMenuProps {
@@ -10,12 +11,13 @@ interface AccountMenuProps {
 
 export function AccountMenu({ email, onClose }: AccountMenuProps) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showManage, setShowManage] = useState(false);
 
   const handleDeleteAccount = async () => {
     const confirmed = window.confirm(
       'Are you sure you want to delete your account? This action cannot be undone and will permanently delete all your data.'
     );
-    
+
     if (confirmed) {
       setIsDeleting(true);
       try {
@@ -29,6 +31,10 @@ export function AccountMenu({ email, onClose }: AccountMenuProps) {
       }
     }
   };
+
+  if (showManage) {
+    return <ManageAccount onClose={() => setShowManage(false)} />;
+  }
 
   return (
     <div className="p-6 space-y-4">
@@ -52,10 +58,7 @@ export function AccountMenu({ email, onClose }: AccountMenuProps) {
 
       <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-2">
         <button
-          onClick={() => {
-            toast.error('Account management is not available at this time');
-            onClose();
-          }}
+          onClick={() => setShowManage(true)}
           className="w-full flex items-center justify-between p-3 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
         >
           <div className="flex items-center gap-3">

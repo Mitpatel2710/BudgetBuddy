@@ -2,6 +2,7 @@ import React from 'react';
 import { ListFilter, Loader } from 'lucide-react';
 import type { Transaction } from '../types/finance';
 import { isCurrentMonth, formatDate } from '../utils/date';
+import { useFormatMoney } from '../utils/format';
 import { TransactionTrendChart } from './charts/TransactionTrendChart';
 import { ExpenseDistributionChart } from './charts/ExpenseDistributionChart';
 
@@ -12,6 +13,7 @@ interface TransactionListProps {
 
 export function TransactionList({ transactions, loading }: TransactionListProps) {
   const currentMonthTransactions = transactions.filter(t => isCurrentMonth(t.date));
+  const formatMoney = useFormatMoney();
 
   if (loading) {
     return (
@@ -84,7 +86,7 @@ export function TransactionList({ transactions, loading }: TransactionListProps)
                         ? 'text-red-600 dark:text-red-400'
                         : 'text-blue-600 dark:text-blue-400'
                     }`}>
-                      {transaction.type === 'expense' ? '-' : '+'}${Math.abs(transaction.amount).toFixed(2)}
+                      {transaction.type === 'expense' ? '-' : '+'}{formatMoney(transaction.amount)}
                     </td>
                   </tr>
                 ))}

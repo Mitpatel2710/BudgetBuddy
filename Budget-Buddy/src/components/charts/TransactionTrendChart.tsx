@@ -12,6 +12,7 @@ import {
 } from 'chart.js';
 import type { Transaction } from '../../types/finance';
 import { format, subMonths, startOfMonth, endOfMonth } from 'date-fns';
+import { useCurrency } from '../../contexts/CurrencyContext';
 
 ChartJS.register(
   CategoryScale,
@@ -34,6 +35,8 @@ interface MonthlyData {
 }
 
 export function TransactionTrendChart({ transactions }: TransactionTrendChartProps) {
+  const { currency } = useCurrency();
+
   const monthlyData = React.useMemo(() => {
     const last9Months = Array.from({ length: 9 }, (_, i) => {
       const date = subMonths(new Date(), i);
@@ -69,7 +72,7 @@ export function TransactionTrendChart({ transactions }: TransactionTrendChartPro
       {
         label: 'Income',
         data: monthlyData.map(d => d.income),
-        borderColor: '#10b981', // Green
+        borderColor: '#10b981',
         backgroundColor: 'rgba(16, 185, 129, 0.1)',
         tension: 0.4,
         pointRadius: 4,
@@ -78,7 +81,7 @@ export function TransactionTrendChart({ transactions }: TransactionTrendChartPro
       {
         label: 'Expenses',
         data: monthlyData.map(d => d.expenses),
-        borderColor: '#ef4444', // Red
+        borderColor: '#ef4444',
         backgroundColor: 'rgba(239, 68, 68, 0.1)',
         tension: 0.4,
         pointRadius: 4,
@@ -102,7 +105,7 @@ export function TransactionTrendChart({ transactions }: TransactionTrendChartPro
         bodyColor: '#fff',
         bodySpacing: 4,
         callbacks: {
-          label: (context: any) => `${context.dataset.label}: $${context.raw.toFixed(2)}`
+          label: (context: any) => `${context.dataset.label}: ${currency.symbol}${context.raw.toFixed(2)}`
         }
       },
       legend: {
@@ -126,7 +129,7 @@ export function TransactionTrendChart({ transactions }: TransactionTrendChartPro
           color: 'rgba(0, 0, 0, 0.05)'
         },
         ticks: {
-          callback: (value: number) => `$${value}`
+          callback: (value: number) => `${currency.symbol}${value}`
         }
       }
     }

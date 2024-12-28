@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { DollarSign, TrendingUp, TrendingDown, RefreshCw } from 'lucide-react';
-import { TransactionsPieChart } from './charts/TransactionsPieChart';
-import { SavingsTrendChart } from './charts/SavingsTrendChart';
 import type { Summary } from '../types/finance';
 import type { Transaction } from '../types/finance';
+import { useFormatMoney } from '../utils/format';
 import toast from 'react-hot-toast';
 
 interface DashboardProps {
@@ -15,6 +14,7 @@ interface DashboardProps {
 
 export function Dashboard({ summary, transactions, onClearTransactions }: DashboardProps) {
   const [isClearing, setIsClearing] = useState(false);
+  const formatMoney = useFormatMoney();
 
   const handleClear = async () => {
     if (!onClearTransactions) return;
@@ -65,7 +65,7 @@ export function Dashboard({ summary, transactions, onClearTransactions }: Dashbo
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Income</p>
               <p className="text-2xl font-semibold text-green-600 dark:text-green-400">
-                ${summary.totalIncome.toFixed(2)}
+                {formatMoney(summary.totalIncome)}
               </p>
             </div>
             <motion.div
@@ -88,7 +88,7 @@ export function Dashboard({ summary, transactions, onClearTransactions }: Dashbo
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Expenses</p>
               <p className="text-2xl font-semibold text-red-600 dark:text-red-400">
-                ${summary.totalExpenses.toFixed(2)}
+                {formatMoney(summary.totalExpenses)}
               </p>
             </div>
             <motion.div
@@ -111,7 +111,7 @@ export function Dashboard({ summary, transactions, onClearTransactions }: Dashbo
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Net Savings</p>
               <p className="text-2xl font-semibold text-blue-600 dark:text-blue-400">
-                ${summary.savings.toFixed(2)}
+                {formatMoney(summary.savings)}
               </p>
             </div>
             <motion.div
